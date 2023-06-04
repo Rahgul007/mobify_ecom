@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% comment %} {% include 'message.html' %} {% endcomment %}
+
+<section class="cart-container">
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li>My Cart</li>
+        </ul>
+    </div>
+    <div class="cart">
+        <div class="cart-box">
+            {% if cart_list %}
+            {% for cart in cart_list %}
+            <div class="cart-card">
+                <div class="cart-img">
+                    <img src="{{cart.product.img.url}}" alt="">
+                </div>
+                <div class="cart-detail">
+                    <input type="hidden" id="cid" value="{{cart.id}}">
+                    <h4 class="cart-brand">
+                        {{cart.product.brand.name}}
+                        <span id="cross{{cart.id}}" class="cross-sign">&#10006;</span>
+                    </h4>
+                    <p class="cart-name">{{cart.product.name}}</p>
+                    <div class="cart-price">
+                        {% if cart.product.discount != 0.0 %}
+                        <p class="cart-selling-price"><small>From&nbsp;</small>&#8377;{{cart.product.get_final_price}}</p>
+                        {% else %}
+                        <p class="cart-selling-price">&#8377;{{cart.product.get_final_price}}</p>
+                        {% endif %}
+                        <p class="cart-discount">
+                            {% if cart.product.discount != 0.0 %}
+                            <small class="disconut">{{cart.product.discount}}%</small> 
+                            <small class="original-price">${{cart.product.price}}</small>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <p class="cart-qty">Qty:1</p>
+                    <p class="cart-desc">
+                        {{cart.product.discription | slice:":150" }}
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-product no-cart">
+                <h1>Cart Not Available Now ...</h1>
+            </div>
+            {% endif %}
+
+        </div>
+        <div class="checkout-box">
+            <div class="checkout">
+                <h2>TOTAL</h2>
+                {% for cart in cart_list %}
+                <div class="total">
+                    <p>{{cart.product.brand.name}} {{cart.product.name}}</p>
+                    <p>{{cart.get_total_price}}</p>
+                </div>
+                {% endfor %}
+                <div class="total">
+                    <p>Total value</p>
+                    <p>
+                        {% if request.session.cart_count != '' or request.session.cart_count != 0 %}
+                        {{final_amount}}
+                        {% else %}
+                        0
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="cart-btn">
+                    <button>checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    window.addEventListener("DOMContentLoaded", (event) => {
+        const remove_cart = document.getElementsByClassName("cross-sign");
+        for (let i=0;i<remove_cart.length;i++){
+            remove_cart[i].addEventListener("click",()=>{
+                let cid = document.getElementById(`cid`);
+                console.log(cid);
+                let cart_id = {
+                    'cid': cid.value
+                    }
+                fetch("{% url 'remove_cart' %}", {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify(cart_id)
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    console.log(data);
+                    // alert(data['status']);
+                    document.location.reload(true);
+                });
+            })
+        }
+    })
+</script>
+
+{% endblock scripts %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="profile-container">
+    <div class="profile">
+        <div class="profile-card">
+            <img src="{% static 'assets/images/default_image.png' %}" alt="John" style="width:100%">
+            <h1>{{profile.username | title}}</h1>
+            <!-- <p class="profile-title">CEO & Founder, Example</p> -->
+            <p class="profile-email">{{profile.email}}</p>
+            <div style="margin: 18px 0;">
+                <a href="#"><i class="fa fa-dribbble"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-linkedin"></i></a>
+                <a href="#"><i class="fa fa-facebook"></i></a>
+            </div>
+            <p>
+                <button id="myBtn">Edit</button>
+            </p>
+        </div>
+
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <h3>Edit Profile <span class="close">&times;</span></h3>
+                <div>
+                    <form action="{% url 'profile' profile.id %}" method="post">
+                        {% csrf_token %}
+                        <label for="username">Userame</label>
+                        <input type="text" id="username" value="{{profile.username}}" name="username" placeholder="Your username...">
+
+                        <label for="email">Email</label>
+                        <input type="email" id="email" value="{{profile.email}}" name="email" placeholder="Your email...">
+
+                        <input type="submit" value="Submit">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+
+{% block scripts %}
+
+<script>
+
+var modal = document.getElementById("myModal");
+var btn = document.getElementById("myBtn");
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+
+{% endblock scripts %}

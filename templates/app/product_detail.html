@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+{% comment %} {% include 'message.html' %} {% endcomment %}
+
+<section class="prod-detail-container">
+
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'product' product_detail.category.id %}">{{product_detail.category.name}}</a></li>
+            <li>{{product_detail.brand.name}} {{product_detail.name}}</li>
+        </ul>
+    </div>
+    
+    <div class="prod-detail">
+        <div class="prod-detail-img">
+            <img src="{{product_detail.img.url}}" alt="">
+        </div>
+        <div class="prod-detail-box">
+            <h2 class="prod-detail-brand">{{product_detail.brand.name}}</h2>
+            <h4 class="prod-detail-name">{{product_detail.name}}</h4>
+            <div class="prod-detail-price">
+                <p class="prod-detail-selling-price"><small>From&nbsp;</small>&#8377;{{product_detail.get_final_price}}</p>
+                {% if product_detail.discount != 0.0 %}
+                <p class="prod-detail-discount">{{product_detail.discount}}%</p>
+                <p class="prod-detail-original-price">&#8377;{{product_detail.price}}</p>
+                {% endif %}
+            </div>
+            <p class="prod-detail-desc">
+               {{product_detail.discription}}
+            </p>
+            <p class="prod-qty">QTY: 1</p>
+            <div class="prod-detail-btn">
+                <input type="hidden" id="pid" value="{{product_detail.id}}">
+                <button class="add_cart" id="add_cart">Add Cart</button>
+                <button class="buy">Buy</button>
+            </div>
+        </div>
+    </div>
+    <div class="prod-review">
+        <div class="prod-user-review">
+            {% for review in review_list  %}
+            <div class="prod-user-review-card">
+                <input type="hidden" id="rid" value="{{review.id}}">
+                <h4>{{review.rate}}
+                    <span>&#10032;</span> 
+                    <small>{{review.user.username}}</small> 
+                    <small>{{review.createdAt}}</small> 
+                    <span id="cross{{review.id}}" class="cross-sign">&#10006;</span>
+                </h4>
+                <p>{{review.comment}}</p>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="prod-review-form">
+            <form action="" method="post">
+                {% csrf_token %}
+                <div class="comment-input">
+                    <label for="comment" class="comment">Write your review....</label>
+                    <textarea name="comment" id="" cols="50" rows="4" class="cmt-ipt"></textarea>
+                </div>
+                <div class="rate-input">
+                    <p class="rating-label"><strong>Your Rating</strong></p>
+                    <div class="rating">
+                        <label>
+                            <input type="radio" name="rate" value="1" />
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="rate" value="2" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="rate" value="3" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="rate" value="4" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="radio" name="rate" value="5" />
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                    </div>
+                </div>
+                <button type="submit" class="review-btn">Submit</button>
+            </form>
+            </form>
+        </div>
+    </div>
+</section>
+
+{% endblock content %}
+
+{% block scripts %}
+
+<script>
+    window.addEventListener("DOMContentLoaded", (event) => {
+        const add_cart = document.getElementById("add_cart");
+        const pid = document.getElementById("pid");
+        add_cart.addEventListener("click", () => {
+            let cart = {
+                'pid': pid.value
+            }
+            console.log(cart);
+            fetch("{% url 'add_cart' %}", {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: {
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify(cart)
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log(data);
+                // alert(data['status']);
+                document.location.reload(true);
+            });
+        })
+        const review = document.getElementsByClassName("cross-sign");
+        for (let i=0;i<review.length;i++){
+            review[i].addEventListener("click",()=>{
+                let rid = document.getElementById(`rid`);
+    
+                let review_id = {
+                    'rid': rid.value
+                    }
+                fetch("{% url 'remove_review' %}", {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify(review_id)
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    console.log(data);
+                    // alert(data['status']);
+                    document.location.reload(true);
+                }); 
+            })
+        }
+    })
+</script>
+
+{% endblock scripts %}

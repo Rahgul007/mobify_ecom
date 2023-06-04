@@ -1,0 +1,37 @@
+{% load static %}
+{% if messages %}
+{% for msg in messages %}
+{% if msg.tags %}
+<div id="snackbar" style="visibility:visible;">
+    <div class="extra-space {{msg.tags}}-tag">
+    </div>
+    <div class="snackbar-container {{msg.tags}}">
+        <h4 class="snackbar-tag">
+            {% if msg.tags == 'success' %}
+            <i class="far fa-check-circle"></i>
+            {{msg.tags}}
+            {% elif msg.tags == 'error' %}
+            <i class="far fa-times-circle"></i>
+            {{msg.tags}}
+            {% elif msg.tags == 'warning' %}
+            <i class="fas fa-exclamation-triangle"></i>
+            {{msg.tags}}
+            {% endif %}
+        </h4>
+        <p class="snackbar-msg">
+            <span>
+                {{msg}}
+            </span>
+        </p>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+
+<script>
+    window.addEventListener("load", () => {
+        var x = document.getElementById("snackbar");
+        setTimeout(function () { x.style.visibility = "hidden" }, 3000);
+    })
+</script>

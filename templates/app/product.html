@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+
+<section class="product-container">
+
+    <div class="breadcrumb-container">
+        <ul class="breadcrumb">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            {% if category %}
+            <li>{{category.name}}</li>
+            {% else %}
+            <li>All</li>
+            {% endif %}
+        </ul>
+    </div>
+    
+    <div class="product-filter-container">
+    
+        <div class="filter-list">
+            <h4 class="filter-accordion" id="filter-accordion">Filter Products</h4>
+            <div class="filter-panel">
+                <form action="" method="get">
+                    {% csrf_token %}
+                    <!-- brands -->
+                    <h4 class="filter-brand">Brands</h4>
+                    <div class="input">
+                        <input type="radio" id="brand_all" name="brand" value="0" {% if brand_id == 0 %} checked {% endif %}>
+                        <label for="brand_all">All</label><br>
+                    </div>
+                    {% for brand in brand_list %}
+                    <div class="input">
+                        <input type="radio" id="{{brand.name}}" name="brand" value="{{brand.id}}" {% if brand_id == brand.id %} checked {% endif %}>
+                        <label for="{{brand.name}}">{{brand.name}}</label><br>
+                    </div>
+                    {% endfor %}
+                    <!-- Price -->
+                    <h4 class="filter-price">Price</h4>
+                    <div class="input">
+                        <input type="radio" id="price_all" name="price" value="0" {% if price_limit == '0' or price_limit == 0 %} checked {% endif %}>
+                        <label for="price_all">All</label><br>
+                    </div>
+                    {% for price_range in price_ranges %}
+                    <div class="input">
+                        <input type="radio" id="price{{price_range.price_id}}" name="price" value="{{price_range.price_range}}" {% if price_limit == price_range.price_range %} checked {% endif %}>
+                        <label for="price{{price_range.price_id}}">{{price_range.price_range}}</label><br>
+                    </div>
+                    {% endfor %}
+                    <input type="submit" value="Submit" class="filter-btn">
+                </form>
+            </div>
+        </div>
+        <div class="product-list">
+            {% if product_list %}
+            {% for product in product_list %}
+            <div class="product-card">
+                <div class="product-img">
+                    {% if product.discount != 0.0 or product.discount != 0 %}
+                    <p class="product-discount">{{product.discount}}%-off</p>
+                    {% endif %}
+                    <img src="{{product.img.url}}" alt="{{product.name}}" style="width:100%">
+                </div>
+                <div class="product-details">
+                    <h1 class="product-brand">{{product.brand.name}}</h1>
+                    <h4 class="product-name">{{product.name}}</h4>
+                    <div class="product-price-container">
+                        {% if product.discount != 0.0 %}
+                        <p class="product-price">
+                            <small>From&nbsp;</small> 
+                            &#8377;{{product.get_final_price}}
+                        </p>
+                        <p class="product-original-price">${{product.price}}</p>
+                        {% else %}
+                        <p class="product-price">${{product.price}}</p>
+                        {% endif %}
+                    </div>
+                    <!-- <div class="popular-mobile-rating">
+                        <label>
+                            <input type="checkbox" name="rate" value="1" disabled />
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rate" value="2" disabled/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rate" value="3" disabled/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rate" value="4" disabled/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                        <label>
+                            <input type="checkbox" name="rate" value="5" checked disabled/>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                            <span class="icon">★</span>
+                        </label>
+                    </div> -->
+                    <p class="product-desc">
+                       {{product.discription | slice:":100" }}
+                    </p>
+                    <p class="product-view-btn">
+                        <a href="{% url 'product_detail' product.id %}">View</a>
+                    </p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="no-product">
+                <h1>Product Not Available Now ...</h1>
+            </div>
+            {% endif %} 
+            
+        </div>
+    </div>
+
+</section>
+{% endblock content %}

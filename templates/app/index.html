@@ -1,0 +1,216 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<section class="index-container">
+    <!-- Category list -->
+    {% if category_list %}
+    <div class="category-container">
+        <div class="category-item">
+            {% for category in category_list %}
+            <p><a href="{% url 'product' category.id %}">{{category.name}}</a></p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <!-- Banner -->
+    {% if banner_list %}
+    <div class="banner-container">
+        <div class="slideshow-container">
+            {% for banner in banner_list %}
+            <div class="mySlides fade">
+                <div class="banner-img">
+                    <img src="{{banner.banner_img.url}}" alt="banner">
+                </div>
+                <div class="text">Caption Text</div>
+            </div>
+            {% endfor %}
+            <a class="prev" onclick="plusSlides(-1)">❮</a>
+            <a class="next" onclick="plusSlides(1)">❯</a>
+        </div>
+        <br>
+
+        <div style="text-align:center">
+            <span class="dot" onclick="currentSlide(1)"></span>
+            <span class="dot" onclick="currentSlide(2)"></span>
+            <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+    </div>
+    {% endif %}
+    <!-- Popular & Trending mobiles -->
+    
+    <div class="popular-container">
+        {% if product_list %}
+        <h2>Popular & Trending Mobiles</h2>
+        <div class="popular-mobile-list">
+            {% for popular_product in product_list %}
+            <div class="popular-card">
+                {% if popular_product.discount != 0.0 or popular_product.discount != 0 %}
+                <p class="popular-mobile-discount">{{popular_product.discount}}%-off</p>
+                {% endif %}
+                <img src="{{popular_product.img.url}}" alt="{{popular_product.name}}" style="width:90%">
+                <h1 class="popular-mobile-brand">{{popular_product.brand.name}}</h1>
+                <h4 class="popular-mobile-name">{{popular_product.name}}</h4>
+                <div class="popular-mobile-price-container">
+                    {% if popular_product.discount != 0.0 %}
+                    <p class="popular-mobile-price">
+                        <small>From&nbsp;</small>&#8377;{{popular_product.get_final_price}}
+                    </p>
+                    {% else %}
+                    <p class="popular-mobile-price popular-price">
+                        <small>From&nbsp;</small>&#8377;{{popular_product.get_final_price}}
+                    </p>
+                    {% endif %}
+                    {% if popular_product.discount != 0.0 %}
+                    <p class="popular-mobile-original-price">&#8377;{{popular_product.price}}</p>
+                    {% endif %}
+                </div>
+                <!-- <div class="popular-mobile-rating">
+                    <label>
+                        <input type="checkbox" name="rate" value="1" disabled />
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="2" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="3" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="4" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="5" checked disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                </div> -->
+                <!-- <p class="popular-mobile-desc">
+                    Some text about the jeans.
+                    Super slim and comfy lorem ipsum lorem jeansum.
+                    Lorem jeamsun denim lorem jeansum.
+                </p> -->
+                <p class="popular-mobile-cart-btn">
+                    <button><a href="{% url 'product_detail' popular_product.id %}">View</a></button>
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% if accessories_list %}
+        <h2>Most Selling Accessories</h2>
+        <div class="accessories-list">
+            {% for accessories in accessories_list %}
+            <div class="accessories-card">
+                {% if accessories.discount != 0.0 or accessories.discount != 0 %}
+                <p class="accessories-discount">{{accessories.discount}}%-off</p>
+                {% endif %}
+                <img src="{{accessories.img.url}}" alt="Denim Jeans" style="width:100%">
+                <h1 class="accessories-brand">{{accessories.brand.name}}</h1>
+                <h4 class="accessories-name">{{accessories.name}}</h4>
+                <div class="accessories-price-container">
+                    {% if accessories.discount != 0.0 or accessories.discount != 0 %}
+                    <p class="accessories-price">
+                        <small>From&nbsp;</small>&#8377;{{accessories.get_final_price}}
+                    </p>
+                    {% else %}
+                    <p class="accessories-price accessorire-normal-price">
+                        <small>From&nbsp;</small>&#8377;{{accessories.get_final_price}}
+                    </p>
+                    {% endif %}
+                    {% if accessories.discount != 0.0 or accessories.discount != 0 %}
+                    <p class="accessories-original-price">&#8377;{{accessories.price}}</p>
+                    {% endif %}
+                </div>
+                <!-- <div class="accessories-rating">
+                    <label>
+                        <input type="checkbox" name="rate" value="1" disabled />
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="2" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="3" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="4" disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                    <label>
+                        <input type="checkbox" name="rate" value="5" checked disabled/>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                        <span class="icon">★</span>
+                    </label>
+                </div> -->
+                <!-- <p class="popular-mobile-desc">
+                    Some text about the jeans.
+                    Super slim and comfy lorem ipsum lorem jeansum.
+                    Lorem jeamsun denim lorem jeansum.
+                </p> -->
+                <p class="accessories-cart-btn">
+                    <button><a href="{% url 'product_detail' accessories.id %}">View</a></button>
+                </p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+
+</section>
+{% endblock content %}
+
+{% block scripts %}
+<script>
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        let i;
+        let slides = document.getElementsByClassName("mySlides");
+        let dots = document.getElementsByClassName("dot");
+        if (n > slides.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = slides.length }
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].className += " active";
+    }
+</script>
+{% endblock scripts %}

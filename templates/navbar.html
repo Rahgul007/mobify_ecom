@@ -1,0 +1,51 @@
+{% load static %}
+<header class="header">
+    <nav class="nav-container">
+        <div class="nav-logo">
+            <a href="{% url 'index' %}" class="nav-logo-link">
+                <img src="{% static 'assets/logo/logo1.png' %}" alt="logo" srcset="" width="50" height="50">
+            </a>
+        </div>
+
+        <form action="{% url 'product' 0 %}" method="get" class="search">
+            <input type="search" name="search" id="search" placeholder="Search mobiles here ...">
+            <button type="submit" class="button"><i class="fas fa-search"></i></button>
+        </form>
+
+        <div class="nav-auth">
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'profile' request.user.id %}" class="">
+                <i class="fas fa-user-circle"></i>
+                <span>{{request.user.username}}</span>
+            </a>
+            <div class="dropdown-content">
+                <a href="{% url 'logout' %}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+            {% else %}
+            <a href="{% url 'login' %}">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Login</span>
+            </a>
+            <a href="{% url 'register' %}">
+                <i class="fas fa-user-plus fa-sm"></i>
+                <span>Register</span>
+            </a>
+            {% endif %}
+        </div>
+        
+        <div class="nav-others">
+            {% if request.user.is_authenticated %} 
+            <a href="{% url 'cart' %}">
+                <i class="fas fa-shopping-cart"></i>
+                {% if request.session.cart_count %}
+                <span class="badge">{{request.session.cart_count}}</span>
+                 {% endif %}
+            </a>
+            {% endif %}
+        </div>
+        
+    </nav>
+</header>
